@@ -1,202 +1,192 @@
-# Trabajo Final — Programación Lineal
+<div class="cover">
 
-**Curso:** Optimización (2026-1) · Universidad de Antioquia · Facultad de Ingeniería
-**Equipo:** Gabriel Cardona, Juan Sebastián Tabares, Víctor Rodas
-**Fecha de entrega:** 30 de mayo de 2026
-**Repositorio del programa:** `proyectos/optimizacion-pl/`
+<p class="cover-uni">Universidad de Antioquia</p>
+<p class="cover-fac">Facultad de Ingeniería — Departamento de Ingeniería de Sistemas</p>
 
----
+<h1 class="cover-title">Solver de Programación Lineal</h1>
+<p class="cover-sub">Resolución paso a paso, métodos Simplex, Gran M, Gráfico y análisis de sensibilidad</p>
 
-## 1. Descripción del programa
+<div class="cover-box">
+<p><strong>Curso</strong> · Optimización 2026-1</p>
+<p><strong>Trabajo</strong> · Programación Lineal — Entrega final</p>
+<p><strong>Fecha</strong> · 30 de mayo de 2026</p>
+</div>
 
-El programa es un **solver interactivo de Programación Lineal (PL)** desarrollado en **Python 3.13** con interfaz web en **Streamlit**. Resuelve problemas de PL formulados en su **forma básica** (antes de la aumentada) y muestra la solución **paso a paso**, tablero por tablero, replicando el formato de las diapositivas del curso.
+<div class="cover-team">
+<p class="cover-team-title">Equipo</p>
+<p>Gabriel Jaime Cardona Montoya</p>
+<p>Juan Sebastián Tabares</p>
+<p>Víctor Rodas</p>
+</div>
 
-El usuario puede:
-1. Definir un problema de PL con cualquier número de variables (2 a 8) y restricciones (1 a 10).
-2. Especificar maximización o minimización.
-3. Usar restricciones de tipo ≤, ≥ o =.
-4. Cargar ejemplos predefinidos (Wyndor Glass, problema de la dieta, producción simple).
-5. Ver la solución óptima, los tableros de cada iteración, el análisis de sensibilidad, el método gráfico (si hay 2 variables) y la versión matricial del Simplex Revisado.
+<p class="cover-repo">Repositorio público: <code>github.com/gjcardonam/optimizacion-pl-udea</code></p>
 
-El solver **detecta automáticamente** qué método aplicar:
-- **Simplex tabular básico** si todas las restricciones son del tipo ≤ (la solución básica inicial trivial es factible).
-- **Método de la Gran M** si hay restricciones ≥ o = (se requieren variables artificiales).
+</div>
 
-Adicionalmente expone una vista del **Simplex Revisado (forma matricial)** y un **análisis de sensibilidad post-óptimo**.
 
-## 2. Problema de referencia (modelo)
+# 1. Descripción del programa
 
-Como problema base se utilizó el clásico de **Wyndor Glass** (Hillier & Lieberman, *Introducción a la Investigación de Operaciones*), pero el programa es genérico:
+El programa es un **solver interactivo de Programación Lineal** desarrollado en **Python 3.13** con interfaz web en **Streamlit**. Recibe el problema en su **forma básica** (antes de la aumentada), lo convierte automáticamente a forma estándar y muestra la solución **paso a paso, tablero por tablero**, replicando el formato de las diapositivas del curso.
 
-> Wyndor Glass debe decidir cuántos lotes producir de dos productos nuevos (puertas y ventanas) para maximizar la utilidad, sujeto a la disponibilidad de tiempo en tres plantas de producción.
+El sistema escoge automáticamente el método apropiado:
 
-Formulación:
+- **Simplex tabular básico** cuando todas las restricciones son del tipo ≤ (la base inicial trivial con holguras es factible).
+- **Método de la Gran M** cuando existen restricciones ≥ o = (se requieren variables artificiales penalizadas).
 
-```
-MAX  Z = 3·x₁ + 5·x₂
+Adicionalmente expone el **Simplex Revisado** en forma matricial (B, B⁻¹, c_B·B⁻¹), el **método gráfico** para problemas de 2 variables y un **análisis de sensibilidad** post-óptimo con precios sombra, costos reducidos y rangos de variación.
 
-s.a.
-    x₁           ≤ 4       (Planta 1)
-              2·x₂ ≤ 12     (Planta 2)
-    3·x₁ + 2·x₂  ≤ 18      (Planta 3)
-    x₁, x₂ ≥ 0
-```
+# 2. Problema modelo
 
-**Solución óptima** (verificada): `x₁ = 2`, `x₂ = 6`, `Z* = 36`.
+Para validar el comportamiento del programa se usa como problema de referencia el clásico de **Wyndor Glass** (Hillier & Lieberman):
 
-Esta formulación permite además ilustrar el método gráfico (n = 2) y comparar contra las diapositivas y los textos clásicos. El programa también fue validado con un problema mixto (≤, =, ≥) — el **problema de la dieta** — y con casos de infactibilidad y no acotación.
+> Wyndor Glass debe decidir cuántos lotes producir de dos productos nuevos (puertas y ventanas) para **maximizar la utilidad**, sujeto a la disponibilidad de tiempo en tres plantas de producción.
 
-## 3. Arquitectura del programa
+**Formulación matemática:**
+
+<div class="formula">
+<p><b>MAX</b> &nbsp;&nbsp; Z = 3·x₁ + 5·x₂</p>
+<p>sujeto a:</p>
+<table class="formula-table">
+<tr><td>x₁</td><td>≤ 4</td><td>(Planta 1)</td></tr>
+<tr><td>2·x₂</td><td>≤ 12</td><td>(Planta 2)</td></tr>
+<tr><td>3·x₁ + 2·x₂</td><td>≤ 18</td><td>(Planta 3)</td></tr>
+<tr><td>x₁, x₂</td><td>≥ 0</td><td></td></tr>
+</table>
+</div>
+
+**Solución óptima** (verificada con todos los métodos): `x₁ = 2`, `x₂ = 6`, `Z* = 36`.
+
+El método gráfico generado automáticamente por el programa es:
+
+![Método gráfico del problema Wyndor Glass](docs/assets/grafico_wyndor.png)
+
+
+# 3. Arquitectura
+
+El proyecto separa la lógica del solver de la interfaz: el módulo `solver/` es independiente y reutilizable.
+
+![Arquitectura del programa](docs/assets/arquitectura.png)
 
 ```
 optimizacion-pl/
-├── app.py                  # UI Streamlit
-├── requirements.txt
-├── README.md
+├── app.py                  UI Streamlit
 ├── solver/
-│   ├── problem.py          # LPProblem, Constraint → conversión a forma estándar
-│   ├── tableau.py          # Representación de un tablero Simplex
-│   ├── simplex.py          # Simplex tabular básico
-│   ├── big_m.py            # Método de la Gran M
-│   ├── revised.py          # Simplex revisado (forma matricial)
-│   ├── graphical.py        # Método gráfico (matplotlib)
-│   └── sensitivity.py      # Análisis de sensibilidad
-└── tests/
-    ├── test_simplex.py
-    └── test_all.py
+│   ├── problem.py          LPProblem · conversión forma básica → estándar
+│   ├── tableau.py          Representación de un tablero Simplex
+│   ├── simplex.py          Simplex tabular básico
+│   ├── big_m.py            Método de la Gran M
+│   ├── revised.py          Simplex Revisado (forma matricial)
+│   ├── graphical.py        Método gráfico (matplotlib)
+│   └── sensitivity.py      Análisis de sensibilidad
+├── tests/                  Suite de validación
+└── DOCUMENTO.md / .pdf     Este entregable
 ```
 
-**Separación de responsabilidades:** el módulo `solver/` es independiente de la UI y puede usarse desde cualquier interfaz (consola, otro framework, etc.).
+# 4. Operaciones que realiza el programa
 
-## 4. Operaciones que realiza el programa
+## 4.1 Lectura y normalización
 
-### 4.1 Lectura y normalización
+El usuario ingresa el problema en forma básica (vector `c` y restricciones `(aᵢⱼ, ≷, bᵢ)`). El programa:
 
-El usuario ingresa el problema en **forma básica**:
-- Vector de coeficientes objetivo `c = [c₁, c₂, …, cₙ]`.
-- Lista de restricciones, cada una con coeficientes `aᵢⱼ`, tipo (≤, ≥, =) y lado derecho `bᵢ`.
+1. Si es minimización, multiplica `c` por −1 (resuelve internamente como max).
+2. Si `bᵢ < 0`, multiplica toda la fila por −1 e invierte el sentido.
+3. Agrega variables auxiliares: `sᵢ` (holgura) para ≤, `eᵢ` (exceso) + `aᵢ` (artificial) para ≥, `aᵢ` (artificial) para =.
+4. Construye `A`, `b`, `c` extendido e identifica la base inicial.
 
-El programa convierte automáticamente a **forma estándar**:
-1. Si la función objetivo es de minimización, multiplica `c` por −1 (resuelve internamente como maximización).
-2. Si algún `bᵢ < 0`, multiplica toda la fila por −1 e invierte el sentido de la desigualdad.
-3. Por cada restricción agrega las variables auxiliares necesarias:
-   - **`sᵢ` (holgura)** para ≤
-   - **`eᵢ` (exceso)** y **`aᵢ` (artificial)** para ≥
-   - **`aᵢ` (artificial)** para =
-4. Construye la matriz `A`, el vector `b` y el vector `c` extendido.
-5. Identifica la base inicial (las holguras y artificiales son básicas en el tablero inicial).
+## 4.2 Simplex tabular
 
-### 4.2 Método Simplex tabular
+Algoritmo Simplex clásico con regla de Dantzig para la entrada y razón mínima para la salida. Frente a empates usa **regla de Bland** (menor índice básico) para evitar ciclos. Detecta no acotado (columna sin coeficientes positivos) y óptimos múltiples (coef. reducido = 0 en variable no básica).
 
-Si no hay variables artificiales, aplica el **algoritmo Simplex** clásico:
+## 4.3 Gran M
 
-1. Construye el tablero `(m+1) × (n+1)` con `−c` en la fila z y `[A | b]` debajo.
-2. En cada iteración:
-   - Selecciona la **variable entrante** con la columna de coeficiente reducido más negativo (regla de Dantzig).
-   - Calcula la **razón mínima** `bᵢ / aᵢⱼ` para filas con `aᵢⱼ > 0`.
-   - Si todas las razones son no positivas → **solución NO ACOTADA**.
-   - Si hay empate → **regla de Bland** (menor índice básico) para evitar ciclos.
-   - Realiza el **pivoteo** (normaliza la fila pivote y elimina la columna pivote del resto).
-3. Termina cuando todos los coeficientes reducidos son no negativos → **óptimo**.
-4. Si en el óptimo existe alguna variable no básica con coeficiente reducido = 0 → **óptimos múltiples**.
+Penaliza artificiales con `−M = −10⁶` en la función objetivo. Antes de iterar, **limpia la fila z** restando `M × fila_i` por cada artificial básica. Tras converger, si alguna artificial sigue con valor > 0 → **INFACTIBLE**.
 
-Cada tablero se guarda con su número de iteración, fila/columna pivote, variable entrante y saliente, y se renderiza en la UI con el pivote resaltado.
+## 4.4 Método gráfico
 
-### 4.3 Método de la Gran M
+Para n=2: intersecta cada par de rectas (incluidos ejes), filtra los vértices factibles, evalúa Z en cada uno y selecciona el óptimo. Grafica con `matplotlib` la región factible, las rectas, los vértices y la curva de nivel `Z = Z*`.
 
-Para restricciones ≥ o =, se introducen variables artificiales `aᵢ` penalizadas con `−M` (con `M = 10⁶`) en la función objetivo. El procedimiento:
+## 4.5 Simplex Revisado
 
-1. Construye el tablero inicial con la penalización.
-2. **Limpia la fila z**: para cada artificial básica, resta `M × fila_i` de la fila z (de manera que el coeficiente reducido de las básicas iniciales sea 0).
-3. Aplica el algoritmo Simplex igual que en 4.2.
-4. Al terminar:
-   - Si alguna artificial básica tiene valor > 0 → **solución INFACTIBLE**.
-   - En caso contrario, retorna el óptimo en términos del problema original.
+Misma lógica pero expresada en forma matricial. Por iteración calcula y reporta:
 
-### 4.4 Método gráfico (n = 2)
-
-Para problemas de dos variables:
-
-1. Calcula los **vértices** de la región factible intersectando todos los pares de rectas (incluidos los ejes coordenados).
-2. Descarta vértices que violan alguna restricción o tienen coordenadas negativas.
-3. Evalúa Z en cada vértice y selecciona el óptimo según el sentido (max/min).
-4. Grafica con `matplotlib`:
-   - Recta de cada restricción.
-   - Región factible sombreada (polígono).
-   - Vértices con sus coordenadas.
-   - Curva de nivel `Z = Z*` que pasa por el óptimo.
-   - El vértice óptimo destacado.
-
-### 4.5 Simplex Revisado (matricial)
-
-Implementación equivalente al Simplex tabular pero expresada con operaciones matriciales explícitas. Para cada iteración se calcula y muestra:
-
-- `B`: matriz base actual (columnas de A asociadas a la base).
-- `B⁻¹`: inversa de la base.
-- `c_B`: vector de coeficientes objetivo de las variables básicas.
-- `x_B = B⁻¹·b`: valores de las variables básicas.
-- `y = c_B · B⁻¹`: vector de **precios sombra** (variables duales).
-- `rⱼ = cⱼ − y·Aⱼ`: costos reducidos de las variables no básicas.
-
-La regla de selección de variable entrante (mayor `rⱼ`) y de variable saliente (razón mínima sobre `B⁻¹·Aⱼ`) es idéntica al Simplex tabular.
-
-### 4.6 Análisis de sensibilidad
-
-A partir del tablero final, el programa calcula:
-
-- **Precios sombra (y):** coeficiente de la holgura `sᵢ` en la fila z del tablero óptimo. Indica cuánto cambia Z* por una unidad adicional del recurso `bᵢ`.
-- **Costos reducidos:** coeficiente de cada variable no básica en la fila z. Indica cuánto debería mejorar `cⱼ` para que esa variable entre en la solución óptima.
-- **Rangos de RHS (`bᵢ`):** intervalo `[bᵢ + Δ_min, bᵢ + Δ_max]` dentro del cual la base óptima se mantiene válida. Se calcula a partir de la inversa de la base `B⁻¹` y el vector `x_B`.
-- **Rangos de coeficientes objetivo (`cⱼ`):** intervalo dentro del cual la solución óptima actual sigue siendo óptima. Distingue entre variables básicas (análisis vía cambios en la fila z usando la fila pivote) y no básicas (cota superior dada por el costo reducido actual).
-
-## 5. Casos especiales
-
-El programa reconoce y reporta:
-
-| Caso | Detección |
+| Magnitud | Significado |
 |---|---|
-| **Óptimo único** | Todos los coeficientes reducidos > 0 al converger. |
-| **Óptimos múltiples** | Existe variable no básica con coeficiente reducido = 0 en el óptimo. |
-| **No acotado** | La columna entrante no tiene coeficientes positivos para razón mínima. |
-| **Infactible** | (Gran M) Alguna variable artificial queda con valor > 0 en el óptimo. |
-| **Degeneración** | Empate en la razón mínima → se aplica regla de Bland para evitar ciclos. |
+| `B` | Matriz base (columnas de A asociadas a la base actual) |
+| `B⁻¹` | Inversa de la base |
+| `c_B` | Coeficientes objetivo de las variables básicas |
+| `x_B = B⁻¹·b` | Valores actuales de las variables básicas |
+| `y = c_B · B⁻¹` | Vector dual (precios sombra) |
+| `rⱼ = cⱼ − y·Aⱼ` | Costos reducidos de las no básicas |
 
-## 6. Validación
+## 4.6 Análisis de sensibilidad
 
-Se validó contra los siguientes problemas con resultado conocido:
+Calcula desde el tablero óptimo: **precios sombra** (coef. de holguras en fila z), **costos reducidos**, **rangos de RHS** (vía `B⁻¹` y razón sobre `x_B`) y **rangos de coeficientes objetivo** (separando básicas y no básicas).
 
-| Problema | Esperado | Obtenido |
-|---|---|---|
-| Wyndor Glass (Hillier) | Z=36, x=(2,6) | ✅ |
-| Dieta (mixto ≤/=/≥) | Z=5.25, x=(7.5, 4.5) | ✅ |
-| `Max x₁+x₂` s.a. `−x₁+x₂≤1` | No acotado | ✅ |
-| `x₁+x₂≤2 ∧ x₁+x₂≥5` | Infactible | ✅ |
-| Precios sombra Wyndor | (0, 1.5, 1) | ✅ |
-| Rango RHS Planta 2 Wyndor | [6, 18] | ✅ |
 
-Los tests se encuentran en `tests/test_all.py` y se ejecutan con:
+# 5. Resultados sobre el problema modelo
+
+## 5.1 Tablero óptimo del Simplex
+
+![Tablero final del Simplex tabular](docs/assets/tablero_optimo.png)
+
+El programa alcanza el óptimo en **2 iteraciones**. Variables básicas: `x₁ = 2`, `x₂ = 6`, `s₁ = 2`; no básicas: `s₂ = s₃ = 0`.
+
+## 5.2 Simplex Revisado (forma matricial)
+
+![Matrices del Simplex Revisado en el óptimo](docs/assets/revisado_optimo.png)
+
+El vector dual `y = (0, 1.5, 1)` se obtiene como `c_B · B⁻¹` y coincide con los precios sombra del análisis de sensibilidad — lo que confirma la consistencia entre ambos métodos.
+
+## 5.3 Análisis de sensibilidad
+
+![Precios sombra y rangos de RHS](docs/assets/sensibilidad_b.png)
+
+**Lectura:**
+
+- **Planta 1** tiene precio sombra 0 → la restricción `x₁ ≤ 4` no está activa (sobra capacidad: `s₁ = 2`). Un aumento de su disponibilidad no mejora Z.
+- **Planta 2** tiene precio sombra 1.5 → cada unidad adicional de tiempo en esa planta aumentaría `Z*` en 1.5, dentro del rango `b₂ ∈ [6, 18]`.
+- **Planta 3** tiene precio sombra 1.0 → cada unidad adicional aumenta `Z*` en 1.0, dentro del rango `b₃ ∈ [12, 24]`.
+
+![Costos reducidos y rangos de coeficientes objetivo](docs/assets/sensibilidad_c.png)
+
+Ambas variables `x₁` y `x₂` son básicas (costo reducido = 0). Los rangos indican cuánto puede variar cada coeficiente sin que cambie la base óptima.
+
+# 6. Casos especiales detectados
+
+| Caso | Cómo se detecta |
+|---|---|
+| **Óptimo único** | Todos los costos reducidos > 0 al converger |
+| **Óptimos múltiples** | Existe variable no básica con costo reducido = 0 |
+| **No acotado** | La columna entrante no tiene coeficientes positivos para la razón mínima |
+| **Infactible** | (Gran M) Alguna artificial básica queda con valor > 0 |
+| **Degeneración** | Empate en la razón mínima → se aplica regla de Bland |
+
+# 7. Validación
+
+Suite de tests en `tests/test_all.py`, todos pasando:
+
+| Problema | Resultado esperado | Estado |
+|---|---|:---:|
+| Wyndor Glass (Hillier) | Z=36, x=(2, 6) | ✔ |
+| Dieta (mixto ≤/=/≥) | Z=5.25, x=(7.5, 4.5) | ✔ |
+| `max x₁+x₂` con `−x₁+x₂≤1` | No acotado | ✔ |
+| `x₁+x₂≤2 ∧ x₁+x₂≥5` | Infactible | ✔ |
+| Precios sombra Wyndor | (0, 1.5, 1) | ✔ |
+| Rango RHS Planta 2 | [6, 18] | ✔ |
+| Simplex Revisado (Wyndor) | y = (0, 1.5, 1) | ✔ |
+
+# 8. Cómo ejecutar el programa
 
 ```bash
-.venv/bin/python tests/test_all.py
-```
-
-## 7. Cómo correr el programa
-
-```bash
-# Instalar dependencias (una sola vez)
+# Una sola vez
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 
-# Lanzar la aplicación
-.venv/bin/streamlit run app.py
+# Lanzar la UI
+.venv/bin/streamlit run app.py     # http://localhost:8501
+
+# Correr los tests
+.venv/bin/python tests/test_all.py
 ```
 
-La aplicación abre en `http://localhost:8501`.
-
-## 8. Tecnologías utilizadas
-
-- **Python 3.13** — lenguaje principal.
-- **NumPy** — operaciones matriciales y aritmética del tablero.
-- **pandas** — representación tabular en la UI.
-- **Streamlit** — interfaz web reactiva.
-- **matplotlib** — método gráfico.
+**Tecnologías:** Python 3.13 · NumPy · pandas · Streamlit · matplotlib.

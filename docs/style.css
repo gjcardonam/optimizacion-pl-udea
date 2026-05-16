@@ -1,0 +1,212 @@
+/* Estilo del DOCUMENTO.pdf — Trabajo Final Optimización */
+
+body {
+    font-family: "Helvetica Neue", "Arial", sans-serif;
+    color: #1a1a1a;
+    line-height: 1.35;
+    font-size: 10pt;
+}
+
+h1 {
+    font-size: 16pt;
+    color: #1f3a5f;
+    border-bottom: 2px solid #1f3a5f;
+    padding-bottom: 3px;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+h2 {
+    font-size: 12pt;
+    color: #1f3a5f;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+h3 {
+    font-size: 10.5pt;
+    color: #2c5282;
+    margin-top: 8px;
+    margin-bottom: 3px;
+}
+
+p {
+    margin: 4px 0;
+}
+
+code {
+    background: #f1f3f5;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    color: #c7254e;
+}
+
+pre {
+    background: #f8f9fa;
+    border-left: 3px solid #1f3a5f;
+    padding: 6px 10px;
+    font-size: 8.5pt;
+    overflow-x: hidden;
+    margin: 6px 0;
+    border-radius: 3px;
+    line-height: 1.25;
+}
+
+pre code {
+    background: transparent;
+    color: #1a1a1a;
+    padding: 0;
+}
+
+blockquote {
+    border-left: 4px solid #1f3a5f;
+    background: #f0f4f8;
+    margin: 10px 0;
+    padding: 6px 12px;
+    color: #333;
+    font-style: italic;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 9.5pt;
+}
+
+th {
+    background: #1f3a5f;
+    color: white;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+td {
+    border-bottom: 1px solid #dee2e6;
+    padding: 5px 10px;
+}
+
+tr:nth-child(even) td {
+    background: #f8f9fa;
+}
+
+img {
+    max-width: 80%;
+    max-height: 230px;
+    margin: 6px auto;
+    display: block;
+}
+
+.page-break {
+    page-break-after: always;
+}
+
+/* ============ PORTADA ============ */
+.cover {
+    text-align: center;
+    padding-top: 60px;
+}
+
+.cover-uni {
+    font-size: 13pt;
+    color: #1f3a5f;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.cover-fac {
+    font-size: 10pt;
+    color: #555;
+    margin: 4px 0 60px 0;
+}
+
+.cover-title {
+    font-size: 32pt;
+    color: #1f3a5f;
+    border: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+}
+
+.cover-sub {
+    font-size: 13pt;
+    color: #4a5568;
+    margin: 0 0 80px 0;
+    font-style: italic;
+}
+
+.cover-box {
+    background: #f0f4f8;
+    border: 1px solid #1f3a5f;
+    border-radius: 6px;
+    padding: 18px 30px;
+    margin: 0 60px 40px 60px;
+    text-align: left;
+}
+
+.cover-box p {
+    margin: 6px 0;
+    font-size: 11pt;
+}
+
+.cover-team {
+    margin: 30px 0;
+}
+
+.cover-team-title {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #1f3a5f;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.cover-team p {
+    margin: 4px 0;
+    font-size: 12pt;
+    color: #1a1a1a;
+}
+
+.cover-repo {
+    margin-top: 80px;
+    font-size: 9pt;
+    color: #555;
+}
+
+.cover-repo code {
+    background: transparent;
+    color: #1f3a5f;
+    font-weight: bold;
+}
+
+/* ============ FÓRMULA ============ */
+.formula {
+    background: #f8f9fa;
+    border-left: 3px solid #1f3a5f;
+    padding: 8px 16px;
+    margin: 8px 0;
+    font-family: "Cambria", "Georgia", serif;
+}
+
+.formula p {
+    margin: 4px 0;
+}
+
+.formula-table {
+    margin: 4px 0 4px 20px;
+    width: auto;
+    font-size: 10pt;
+}
+
+.formula-table td {
+    border: none;
+    padding: 2px 12px 2px 0;
+    background: transparent !important;
+}
