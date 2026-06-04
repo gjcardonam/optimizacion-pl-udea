@@ -6,7 +6,6 @@ Este repositorio contiene el **trabajo final del curso de Optimización (semestr
 
 - **Gabriel Jaime Cardona Montoya** (estudiante UdeA)
 - **Juan Sebastián Tabares**
-- **Víctor Rodas**
 
 ## Trazabilidad
 

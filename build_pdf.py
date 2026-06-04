@@ -19,7 +19,7 @@ pdf = MarkdownPdf(toc_level=0)  # sin TOC para mantener el formato limpio
 pdf.add_section(Section(content, toc=False, root=str(ROOT)), user_css=css)
 
 pdf.meta["title"] = "Trabajo Final — Programación Lineal"
-pdf.meta["author"] = "Cardona, Tabares, Rodas"
+pdf.meta["author"] = "Cardona, Tabares"
 pdf.meta["subject"] = "Optimización 2026-1 — UdeA"
 pdf.meta["keywords"] = "PL, Simplex, Gran M, sensibilidad, UdeA"
 

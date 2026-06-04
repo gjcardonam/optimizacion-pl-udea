@@ -3,7 +3,7 @@
 Aplicativo que resuelve problemas de Programación Lineal paso a paso.
 
 **Curso:** Optimización (2026-1) — Universidad de Antioquia
-**Equipo:** Gabriel Cardona, Juan Sebastián Tabares, Víctor Rodas
+**Equipo:** Gabriel Cardona, Juan Sebastián Tabares
 **Entrega final:** 2026-05-30
 
 ## Métodos implementados

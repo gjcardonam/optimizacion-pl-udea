@@ -1,6 +1,6 @@
 """UI Streamlit completa: Simplex, Gran M, Gráfico, Sensibilidad y Simplex Revisado.
 
-Equipo: Cardona, Tabares, Rodas — Optimización 2026-1 UdeA.
+Equipo: Cardona, Tabares — Optimización 2026-1 UdeA.
 """
 
 import streamlit as st
@@ -17,7 +17,7 @@ from solver import (
 st.set_page_config(page_title="Solver PL — UdeA", layout="wide")
 
 st.title("Solver de Programación Lineal — Paso a Paso")
-st.caption("Trabajo Final · Optimización 2026-1 · Universidad de Antioquia · Equipo Cardona / Tabares / Rodas")
+st.caption("Trabajo Final · Optimización 2026-1 · Universidad de Antioquia · Equipo Cardona / Tabares")
 
 # ───────────────────────────────────────────────── Sidebar: entrada
 with st.sidebar:

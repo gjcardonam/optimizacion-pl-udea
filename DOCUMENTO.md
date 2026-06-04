@@ -16,7 +16,6 @@
 <p class="cover-team-title">Equipo</p>
 <p>Gabriel Jaime Cardona Montoya</p>
 <p>Juan Sebastián Tabares</p>
-<p>Víctor Rodas</p>
 </div>
 
 <p class="cover-repo">Repositorio público: <code>github.com/gjcardonam/optimizacion-pl-udea</code></p>

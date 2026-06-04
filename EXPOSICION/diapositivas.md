@@ -308,7 +308,7 @@ style: |
 <div class="rule"></div>
 
 <div class="meta">
-<span class="team">Gabriel Cardona · Juan S. Tabares · Víctor Rodas</span><br>
+<span class="team">Gabriel Cardona · Juan S. Tabares</span><br>
 Universidad de Antioquia — 2026-1
 </div>
 
