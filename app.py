@@ -14,10 +14,93 @@ from solver import (
     SimplexStatus,
 )
 
-st.set_page_config(page_title="Solver PL — UdeA", layout="wide")
+st.set_page_config(page_title="Solver PL — UdeA", layout="wide", page_icon="📐")
 
-st.title("Solver de Programación Lineal — Paso a Paso")
-st.caption("Trabajo Final · Optimización 2026-1 · Universidad de Antioquia · Equipo Cardona / Tabares")
+# ───────────────────────────────────────────────── Estilo (tema académico claro)
+st.markdown(
+    """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Spline+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#16263d; --ink-soft:#54616f; --paper:#f6f3ec; --paper2:#efe9dc;
+  --garnet:#9c2b38; --garnet-dk:#7f2330; --teal:#2f7d77; --rule:#d8cdb6;
+}
+
+html, body, [class*="css"], .stMarkdown, p, span, div, label, input, select, button{
+  font-family:'Spline Sans', system-ui, sans-serif;
+}
+h1,h2,h3,h4{ font-family:'Fraunces', Georgia, serif !important; color:var(--ink) !important; letter-spacing:-.2px; }
+
+[data-testid="stAppViewContainer"]{ background:var(--paper); }
+[data-testid="stHeader"]{ background:transparent; }
+.block-container{ padding-top:1.4rem; padding-bottom:3rem; max-width:1180px; }
+
+/* ---- Hero ---- */
+.hero{
+  background:linear-gradient(120deg,#16263d 0%,#1f3550 58%,#243b59 100%);
+  border-radius:18px; padding:28px 34px; margin:0 0 22px;
+  box-shadow:0 16px 40px rgba(22,38,61,.20); position:relative; overflow:hidden;
+}
+.hero::after{ content:''; position:absolute; right:-50px; bottom:-70px; width:300px; height:300px;
+  background:var(--teal); opacity:.13; clip-path:polygon(0% 100%,0% 30%,35% 0%,78% 12%,100% 60%,100% 100%); }
+.hero-kicker{ font-family:'IBM Plex Mono',monospace; font-size:.78rem; letter-spacing:2px; color:#e9a6ad; text-transform:uppercase; margin-bottom:8px; }
+.hero-title{ font-family:'Fraunces',serif; font-weight:600; font-size:2.25rem; color:#f6f3ec; line-height:1.05; }
+.hero-sub{ font-family:'Fraunces',serif; font-style:italic; font-size:1.05rem; color:#cdd5de; margin-top:8px; }
+.hero-credit{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:#8b9bb0; margin-top:14px; letter-spacing:.5px; }
+
+/* ---- Sidebar ---- */
+[data-testid="stSidebar"]{ background:var(--paper2); border-right:1px solid var(--rule); }
+
+/* ---- Botones ---- */
+.stButton>button{
+  background:var(--garnet) !important; color:#fff !important; border:none !important;
+  border-radius:11px !important; font-weight:600 !important; padding:.65rem 1.1rem !important;
+  box-shadow:0 8px 22px rgba(156,43,56,.25); transition:all .15s ease;
+}
+.stButton>button:hover{ background:var(--garnet-dk) !important; transform:translateY(-1px); }
+
+/* ---- Métricas como tarjetas ---- */
+[data-testid="stMetric"]{
+  background:#fff; border:1px solid var(--rule); border-radius:14px; padding:14px 18px;
+  box-shadow:0 6px 18px rgba(22,38,61,.07);
+}
+[data-testid="stMetricValue"]{ color:var(--garnet) !important; font-family:'Fraunces',serif !important; font-weight:600; }
+[data-testid="stMetricLabel"]{ color:var(--ink-soft) !important; }
+
+/* ---- Pestañas ---- */
+.stTabs [data-baseweb="tab-list"]{ gap:4px; border-bottom:1px solid var(--rule); }
+.stTabs [data-baseweb="tab"]{ font-weight:600; color:var(--ink-soft); }
+.stTabs [aria-selected="true"]{ color:var(--garnet) !important; }
+.stTabs [data-baseweb="tab-highlight"]{ background:var(--garnet) !important; }
+
+/* ---- Expanders ---- */
+[data-testid="stExpander"]{ border:1px solid var(--rule) !important; border-radius:12px !important; background:#fff; box-shadow:0 4px 14px rgba(22,38,61,.05); }
+
+/* ---- Subheaders con regla de acento ---- */
+[data-testid="stHeadingWithActionElements"] h2,
+[data-testid="stHeadingWithActionElements"] h3{ border-bottom:2px solid var(--rule); padding-bottom:6px; }
+
+/* ---- Varios ---- */
+.stAlert{ border-radius:12px; }
+code, kbd{ font-family:'IBM Plex Mono',monospace !important; color:var(--garnet); }
+hr{ border-color:var(--rule); }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+<div class="hero">
+  <div class="hero-kicker">Trabajo Final · Optimización 2026-1 · UdeA</div>
+  <div class="hero-title">Solver de Programación Lineal</div>
+  <div class="hero-sub">Resolución paso a paso — Simplex · Gran M · Gráfico · Sensibilidad</div>
+  <div class="hero-credit">Equipo Cardona · Tabares — Universidad de Antioquia</div>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
 # ───────────────────────────────────────────────── Sidebar: entrada
 with st.sidebar:
@@ -120,9 +203,9 @@ def render_tableaux(tableaux, title="Tableros (iteración por iteración)"):
                 if t.pivot_row is not None and t.pivot_col is not None:
                     pivot_row_label = data.index[t.pivot_row]
                     pivot_col_label = data.columns[t.pivot_col]
-                    styles.loc[pivot_row_label, :] = "background-color: #fff3cd"
-                    styles.loc[:, pivot_col_label] = "background-color: #fff3cd"
-                    styles.loc[pivot_row_label, pivot_col_label] = "background-color: #ffc107; font-weight: bold"
+                    styles.loc[pivot_row_label, :] = "background-color: #f7e4dd"
+                    styles.loc[:, pivot_col_label] = "background-color: #f7e4dd"
+                    styles.loc[pivot_row_label, pivot_col_label] = "background-color: #9c2b38; color: #ffffff; font-weight: bold"
                 return styles
 
             st.dataframe(df.style.apply(highlight, axis=None), use_container_width=True)
@@ -156,16 +239,11 @@ if go:
     st.success(f"Resuelto con método: **{method_name}** — Status: **{result.status.value.upper()}**")
 
     if result.status == SimplexStatus.OPTIMAL:
-        c1, c2 = st.columns([1, 2])
-        with c1:
-            st.metric("Valor óptimo Z*", f"{result.objective_value:.4f}")
-        with c2:
-            decision = {k: v for k, v in result.solution.items() if k.startswith("x")}
-            st.write("**Variables de decisión:**")
-            st.dataframe(
-                pd.DataFrame([decision]).T.rename(columns={0: "valor"}).round(4),
-                use_container_width=True,
-            )
+        decision = {k: v for k, v in result.solution.items() if k.startswith("x")}
+        metric_cols = st.columns(1 + len(decision))
+        metric_cols[0].metric("Z* óptimo", f"{result.objective_value:.2f}")
+        for j, (k, v) in enumerate(decision.items()):
+            metric_cols[j + 1].metric(k, f"{v:.2f}")
         if result.multiple_optima:
             st.warning("Existen **soluciones óptimas múltiples**.")
         if result.degenerate:

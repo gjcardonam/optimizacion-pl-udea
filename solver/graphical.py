@@ -92,16 +92,23 @@ def plot_graphical(problem: LPProblem, optimum: Optional[Tuple[float, float, flo
     else:
         xmax = ymax = 10.0
 
+    # Paleta del tema (coherente con las diapositivas)
+    INK, TEAL, OCHRE, GARNET = "#16263d", "#2f7d77", "#b07d2b", "#9c2b38"
+    PAPER, RULE, INK_SOFT = "#ffffff", "#d8cdb6", "#54616f"
+    constraint_palette = [INK, TEAL, OCHRE, "#3a5a82", "#7d6b9c", "#46757d"]
+
     fig, ax = plt.subplots(figsize=(8, 7))
+    fig.patch.set_facecolor(PAPER)
+    ax.set_facecolor(PAPER)
 
     # Pintar región factible
     if vertices:
         ordered = _sort_ccw(vertices)
-        poly = MplPolygon(ordered, alpha=0.25, facecolor="#1f77b4", edgecolor="#1f77b4", linewidth=2)
+        poly = MplPolygon(ordered, alpha=0.15, facecolor=TEAL, edgecolor=TEAL, linewidth=1.6)
         ax.add_patch(poly)
 
     # Líneas de cada restricción
-    colors = plt.get_cmap("tab10").colors
+    colors = constraint_palette
     for idx, c in enumerate(problem.constraints):
         a1, a2 = c.coeffs
         b = c.rhs
@@ -111,7 +118,7 @@ def plot_graphical(problem: LPProblem, optimum: Optional[Tuple[float, float, flo
             xs = [p[0] for p in pts]
             ys = [p[1] for p in pts]
             label = f"{a1:g}x₁ + {a2:g}x₂ {c.ctype.value} {b:g}"
-            ax.plot(xs, ys, color=colors[idx % 10], linewidth=2, label=label)
+            ax.plot(xs, ys, color=colors[idx % len(colors)], linewidth=2.2, label=label)
 
     # Calcular óptimo sobre vértices si no se dio
     if optimum is None and vertices:
@@ -130,10 +137,10 @@ def plot_graphical(problem: LPProblem, optimum: Optional[Tuple[float, float, flo
     if vertices:
         vx = [p[0] for p in vertices]
         vy = [p[1] for p in vertices]
-        ax.scatter(vx, vy, color="#333", s=40, zorder=5)
+        ax.scatter(vx, vy, color=INK, s=46, zorder=5, edgecolor=PAPER, linewidth=1)
         for x, y in vertices:
             ax.annotate(f"({x:g}, {y:g})", (x, y), textcoords="offset points",
-                        xytext=(6, 6), fontsize=8, color="#333")
+                        xytext=(6, 6), fontsize=9, color=INK_SOFT)
 
     # Curva de nivel de Z en el óptimo
     if optimum is not None:
@@ -144,16 +151,20 @@ def plot_graphical(problem: LPProblem, optimum: Optional[Tuple[float, float, flo
             if pts:
                 pts = sorted(pts)
                 ax.plot([p[0] for p in pts], [p[1] for p in pts],
-                        "--", color="#d62728", linewidth=2, label=f"Z = {z_opt:g} (óptimo)")
-        ax.scatter([x_opt], [y_opt], color="#d62728", s=200, marker="*", zorder=6, label="Óptimo")
+                        "--", color=GARNET, linewidth=2.2, label=f"Z = {z_opt:g} (óptimo)")
+        ax.scatter([x_opt], [y_opt], color=GARNET, s=260, marker="*", zorder=6,
+                   edgecolor=PAPER, linewidth=1, label="Óptimo")
 
     ax.set_xlim(0, xmax)
     ax.set_ylim(0, ymax)
     ax.set_xlabel("x₁")
     ax.set_ylabel("x₂")
-    ax.set_title("Método gráfico — Región factible y óptimo")
-    ax.grid(True, alpha=0.3)
-    ax.legend(loc="upper right", fontsize=8)
+    ax.set_title("Método gráfico — Región factible y óptimo", color=INK, fontsize=13)
+    ax.grid(True, color=RULE, alpha=0.5, linewidth=0.8)
+    for _s in ("top", "right"):
+        ax.spines[_s].set_visible(False)
+    ax.legend(loc="upper right", fontsize=8.5, frameon=True, framealpha=0.95,
+              edgecolor=RULE, facecolor="white")
     fig.tight_layout()
 
     info = {

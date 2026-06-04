@@ -1,0 +1,8 @@
+# Tema claro académico (coherente con las diapositivas de la exposición)
+[theme]
+base = "light"
+primaryColor = "#9c2b38"               # acento granate
+backgroundColor = "#f6f3ec"            # papel pergamino
+secondaryBackgroundColor = "#efe9dc"   # paneles / sidebar
+textColor = "#16263d"                  # tinta azul marino
+font = "sans serif"
